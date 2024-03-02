@@ -13,10 +13,6 @@ We use a 10 min long DAS record section from Rhonegletscher (Switzerland) from 2
 
 ## Getting Started
 
-### Prerequisites
-
-Ensure you have Python installed along with the necessary libraries defined in the corresponding *_requirement.txt files within the deployment folder.
-
 ### Cube Creation
 
 To create a zarr data cube that processes 24/7 of the data, execute:
