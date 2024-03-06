@@ -1,4 +1,8 @@
 # CryoCube
+
+![CryoCube_event](https://github.com/JosepinaU/CryoCube/assets/36039541/633eea0a-5add-4661-9df4-1beee06ddd1b)
+
+
 **Lexcube Visualization of DAS Records**
 
 This repository is dedicated to processing and visualizing data cubes. The project involves the creation as well as visualization of a 3D data cube.
