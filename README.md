@@ -1,6 +1,6 @@
 # CryoCube
 
-**Lexcube Visualization of DAS Records**
+## **Lexcube Visualization of DAS Records**
 
 This repository is dedicated to building and visualizing interactive 3D Data Cubes from DAS (Distributed Acoustic Sensing) records.
 
