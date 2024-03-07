@@ -8,7 +8,7 @@ To showcase the workflow, we use a 10 min long DAS record section from Rhoneglet
 
 ![multiicequake](https://github.com/JosepinaU/CryoCube/assets/36039541/10a313c1-5df4-4403-aca2-e61d8a55e365)
 
-### Features
+## Features
 
 - **Cube Creation**: Automated processing of DAS data including 1) Fast Fourier Transformation of the DAS time series data and 2) Data Cube generation of the DAS data in spectral domain (zarr-formatted). 
 - **Cube Visualization**: Visualization of the spectral Data Cube using Lexcube (https://www.lexcube.org/) in a Python based Jupyter notebook.
