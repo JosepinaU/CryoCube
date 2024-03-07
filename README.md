@@ -27,10 +27,10 @@ The workflow requires a set of libraries stored in `requirements.txt`, which nee
 To create the zarr-formatted spectral Data Cube from cryoseismological DAS records, execute:
 `python create_cube.py 24`
 
-This script generates a Data Cube for a couple of minutes of a specific day (24/07/2020) of DAS data recorded at the Rhonegletscher (Switzerland). The resulting Data Cube features a spectrogram for each DAS channel.
+This script generates a Data Cube for a couple of minutes of a specific day (24/07/2020) of DAS data recorded at the Rhonegletscher (Switzerland). The resulting Data Cube features a spectrogram for each DAS channel and stored as cryo_subcube.zarr.
 
 ### Cube Visualization
 
-To visualize the zarr-fomatted Data Cube, execute the notebook: 
+To visualize the zarr-fomatted Data Cube (cryo_subcube.zarr), execute the notebook: 
 `lexcube_visualization.ipynb`
 
