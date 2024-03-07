@@ -35,3 +35,7 @@ To visualize the zarr-fomatted Data Cube (cryo_subcube.zarr), execute the notebo
 
 ScaDS.AI (Center for Scalable Data Analytics and Artificial Intelligence) Dresden/Leipzig is a center for Data Science, Artificial Intelligence and Big Data with locations in Dresden and Leipzig. It is one of the five new AI centers in Germany funded under the federal government’s AI strategy by the Federal Ministry of Education and Research and the Free State of Saxony. It is established as a permanent research facility at both locations with strong connections to the local universities: the TUD Dresden University of Technology and the Leipzig University. 
 In the ScaDS.AI Earh & Environmental Sciene group (https://scads.ai/research/applied-ai-and-big-data/environment-and-earth-sciences/), we develop and apply multimodal and multiscale machine learning techniques and visualization tools that respect the characteristics and the heterogeneity of Earth System Science data. 
+
+## Acknowledgements
+
+The developers acknowledge the financial support by the Federal Ministry of Education and Research of Germany and by the Sächsische Staatsministerium für Wissenschaft Kultur und Tourismus in the program Center of Excellence for AI-research “Center for Scalable Data Analytics and Artificial Intelligence Dresden/Leipzig”, project identification number: ScaDS.AI.
