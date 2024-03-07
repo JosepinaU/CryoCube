@@ -1,17 +1,17 @@
 import h5py
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy import signal
 import scipy
 from datetime import datetime, time, timedelta
 import zarr
+import numcodecs
 import time
 import os
 from os import listdir
 from os.path import isfile, join
 import re
 from operator import itemgetter
-
-import sys
 from multiprocessing import Pool
 import multiprocessing
 from functools import partial
@@ -26,13 +26,47 @@ as many CPU-cores as possible. (And very much memory)
 
 How it's used in terminal:
 
-create_cube.py [day of data] 
+create_cube.py 
 
-where as [day of data] = 19 would be the data of the 19th of August
+
 If you have any questions, feel free to reach out to
 me, my mail is felix.roth@studserv.uni-leipzig.de
 
 """
+
+# Key adjustable parameters:
+
+# d_f: Frequency resolution in Hz. Adjusts the frequency granularity of the spectrogram.
+d_f = 1
+
+# loc_a and loc_e: Specify the cable section to be processed (in meters).
+# 0 signifies the start of the cable. Adjust these to focus on a specific segment.
+loc_a, loc_e = 0, 9200
+
+# DATA_PATH: Path to the directory where the h5 data files are stored.
+# Adjust this to point to your data location.
+DATA_PATH = "rhonedata/"
+
+# nFiles: Determines how many h5 files are processed. For example, setting nFiles=10
+# processes the first ten chronologically sorted h5 files in the DATA_PATH directory.
+nFiles = 5
+
+# nCores: Specifies how many CPU cores should be used for computation. Adjust according
+# to your system's capabilities and the workload size. The maximum number can be set to
+# multiprocessing.cpu_count() to use all available cores.
+nCores = 8
+
+# Additional parameters:
+
+# file_length: Length of a single h5 file in seconds.
+file_length = 30
+
+# nu: Sampling frequency in Hz. Defines the rate at which data points are recorded.
+nu = 1000
+
+# freq_max: Maximum frequency to be considered in the analysis. All values above
+# this frequency will be cut off.
+freq_max = 100
 
 
 def getTimeFromFilename(filename, day, month):
@@ -58,7 +92,7 @@ def getTimeFromFilename(filename, day, month):
 
 
 
-def getFilenames(day, month):
+def getFilenames(day, month, mypath):
     """
     This function is supposed to collect all
     filenames in the folder with the DAS-data
@@ -69,7 +103,7 @@ def getFilenames(day, month):
     """
     
     two_digit_month = str(month) if month >9 else "0"+str(month)
-    mypath = "/work/users/fu591lmui/RhoneData/2020"+two_digit_month+str(day)+"/"
+    #mypath = "/work/users/fu591lmui/RhoneData/2020"+two_digit_month+str(day)+"/"
 
     files = list([f for f in listdir(mypath) if isfile(join(mypath, f))])
     q = list([(mypath+file, getTimeFromFilename(file, day, month)) for file in files])
@@ -80,7 +114,7 @@ def getFilenames(day, month):
 
 
 def channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f):
-
+    
     #dividing the data into segments each consisting of desired amount of data points
     segs = ([data[i*(seg_len//2):(i+2)*(seg_len//2)] for i in range(nseg)])
     
@@ -91,7 +125,7 @@ def channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f):
     # the first loop iterates over all segments (each corresponding to a time point)
     # in the second loop, the fourier transform gets applied on each channel
     
-    Fsegs=np.zeros((nseg, ind_e- ind_a, ind_f))
+    Fsegs=np.zeros((nseg, ind_e-ind_a, ind_f))
     
     for j in range(nseg):
         for channel_number, channel  in enumerate(segs[j]):
@@ -99,18 +133,15 @@ def channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f):
             # note that modified_log(x)=10*log(x) (conversion to 
             
             fourier_transformed = np.fft.rfft(taper*channel, n=seg_len)
-            fourier_transformed = (modified_log(np.abs(fourier_transformed))**2)[0:ind_f]
+            fourier_transformed = ((10*np.log(np.abs(fourier_transformed)))**2)[0:ind_f]
             fourier_transformed[0]=0
             Fsegs[j][channel_number]=fourier_transformed
     
     return Fsegs
-   
 
-def modified_log(x):
-    return 10*np.log(x)
 
 def create_spectro_segment(file_index, d_f, nseg, seg_len, ind_a, ind_e, ind_f, q):
-
+    global nu, file_length, nFiles
     #opening the DAS-data
     f = h5py.File(q[file_index],'r')
     dset=f['Acoustic']        
@@ -119,24 +150,26 @@ def create_spectro_segment(file_index, d_f, nseg, seg_len, ind_a, ind_e, ind_f, 
     #extracting metadata and the DAS-data (hereby defined "data")
     attr=dset.attrs 
     data = np.array(dset)
+    #choosing a taper function (important for the fourier transform)
+    taper = signal.windows.tukey(seg_len, 0.25)
     
-    
-    
-    if file_index!=2880:
+    if file_index!=nFiles-1:
+
         g = h5py.File(q[file_index+1],'r')
         dset2=g['Acoustic']
         data2= np.array(dset2)
+        #Concatenating data with data from adjacent file
+        #because one of the windows overlapping with
+        #the next file
+
+        data = np.concatenate((data, data2[0:(nu*file_length)//(nseg)]), axis=0)
+        Fsegs = channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f)
+
+    else:
+        Fsegs = channel_fourier(data, nseg-1, seg_len, taper, ind_a, ind_e, ind_f)
+
     
-
-    #Concatenating data with data from adjacent file
-    #because one of the windows is in the next file
-
-    data = np.concatenate((data, data2[0:30000//(nseg)]), axis=0)
-
-
-    #choosing a taper function (important for the fourier transform)
-    taper = signal.windows.tukey(seg_len, 0.25)
-    Fsegs = channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f)
+    
     
 
     return Fsegs
@@ -144,83 +177,75 @@ def create_spectro_segment(file_index, d_f, nseg, seg_len, ind_a, ind_e, ind_f, 
  
 
 if __name__=='__main__':
-    print("max number of CPUs: ", multiprocessing.cpu_count())
+    print("Max number of CPUs: ", multiprocessing.cpu_count())
     
 
-    # get the day of interest out of command line
-    day= int(sys.argv[1])
+    # only relevant if you want a cube for a specific 
+    # time interval
+    day= 24
     month=7
     sec=0
     minut=0
     hours=0
 
-    print("Processed day: ", day, ".", month, ".2020")
+    print(f"Processed day: {day}.{month}.2020")
 
     startT = time.time() 
-    # nFiles determines how many DAS-files get opened. One day holds 2880 files in 
-    # our case. It is important to note that nFiles should always be smaller than 
-    # the amount of files in the folder
-
-    nFiles = 2879
-    nCores = 100 # how many cores should be used for computation
-
-    file_length=30 # length of file in seconds
-    nu = 1000 # sampling frequence
-    loc_a,loc_e = 0, 9200 #what cable length will be processed (in meter)
-    freq_max = 100 #maximum frequency (all values above that get cut off)
-    d_f = 1 # d_f is the desired frequency resolution
 
 
-    number_of_parts=13 # in how many parts the data of the day 
-    # should be divided into. If you have low memory, you can crank it up as much
-    # as you like.
+    seg_length=1/d_f #calculate window length corresponding to d_f
     
-    
-    
+    ind_f = int(seg_length*freq_max+1)
+
+    seg_len=int(seg_length*nu) #how many time points should be in one processing window
+
+    nseg=int(2*(file_length/seg_length)) #amount of segments for the desired window length
+
+    location_coords = np.arange(loc_a, loc_e, 4)
+    freq_coords=scipy.fft.rfftfreq(int(nu/d_f), 1/nu)[:ind_f]
+
+
+
     # in next line the corresponding channel indices get calculated
     # since the distance between each channel is 4m
     ind_a, ind_e= loc_a//4, loc_e//4 
 
-
-    
-    
-
-    seg_length=int(1/d_f) #calculate window length corresponding to d_f
-    
-    ind_f = seg_length*freq_max+1
-
-    seg_len=seg_length*nu #how many time points should be in one processing window
-
-    nseg=2*(file_length//seg_length) #amount of segments for the desired window length
-    location_coords = np.arange(loc_a, loc_e, 4)
-    freq_coords=scipy.fft.rfftfreq(int(nu/d_f), 1/nu)[:ind_f]
-    time_coords= [] 
-
-
-    # die Reihenfolge des z-shape ist (Anzahl Zeitsegmente, Location, Frequenz) 
+    # z-shape is in following order: (number time intervals, location, frequency)
 
     two_digit_month = str(month) if month >9 else "0"+str(month)
     two_digit_day = str(day) if day >9 else "0"+str(day)
     if not os.path.exists("data"):
         os.makedirs("data")
         
-    path_of_zarr = '/work/users/fu591lmui/rhone/try1_create_spectro_local/19/data/'+two_digit_day+two_digit_month+'_1Hz_.zarr'
-    z = zarr.open(path_of_zarr, mode='w', shape=(nFiles*nseg,ind_e-ind_a,ind_f), chunks=(nseg,ind_e-ind_a,ind_f), dtype='float64')
-    print("segment length: ",seg_len)
-    print("number of segments: ",nseg)
+    path_of_zarr = ZARR_NAME
+    root = zarr.open(path_of_zarr, mode="w")
+    z = root.zeros('data', shape=(nFiles*nseg-1,ind_e-ind_a,ind_f), chunks=(nseg,ind_e-ind_a,ind_f), dtype='float64')
 
     
     # getFilenames returns a dictionary full of the filenames
     # which are in the folder /RhoneData/YYYYMMDD
 
-    filenames = getFilenames(day,month)
+    filenames = getFilenames(day,month,DATA_PATH)
+
+    dummy_file = h5py.File(filenames[0], 'r')
+    attr = dummy_file['Acoustic'].attrs
+    zeit = datetime.fromisoformat(attr["ISO8601 Timestamp"])
+    time_coords = [(zeit+timedelta(i*file_length/nseg)).replace(tzinfo=None) for i in range (nFiles*nseg-1)]
+    #time_coords = time_coords
+
+    metadata=root.create_group('metadata')
+    metadata.create_dataset('loc_coords', data=location_coords)
+    metadata.create_dataset('freq_coords', data=freq_coords)
+    time_coordinates=metadata.empty('time_coords', shape=(len(time_coords)),dtype='M8[D]')
+    for i,times in enumerate(time_coords):
+        time_coordinates[i]=times
+
 
     # In the following lines, multiple cpu-cores calculate 
     # a fft for each file simultanously.
     
     # Before that we split the whole data to be processed in 
     # 13 parts (of course arbitrary) to not overload the memory!
-    # (here denoted as number_of_parts)
     # How it's done in this case in this case is to divide
     # a list of indices (1,2,3,...,nFiles) into 13 parts. Since 
     # create_spectro_segment needs an index k which tells which 
@@ -229,16 +254,22 @@ if __name__=='__main__':
     # be processed independently. Make the amount of diveded parts
     # bigger (in this case 13) if the memory can't hold that much data.
 
-    for liste in np.array_split(range(nFiles), number_of_parts):
+    n_div = 13
+    index_list = np.arange(nFiles)
+    
+    for liste in np.array_split(index_list, n_div):
         with Pool(nCores) as p:
             res = p.map(partial(create_spectro_segment, d_f=d_f, nseg=nseg, seg_len=seg_len, ind_a=ind_a, ind_e= ind_e, ind_f = ind_f, q= filenames)  , liste)
         res = list(res)
         for i in liste:
-            z[i*nseg:(i+1)*nseg]=res[i-liste[0]]
+            if i!=nFiles-1:
+                z[i*nseg:(i+1)*nseg]=res[i-int(liste[0])]
+            else:
+                z[i*nseg:(i+1)*nseg-1]=res[i-int(liste[0])]
  
     print("Time for processing all this:", (-startT + time.time()))
-    print("number of processed files: ", nFiles)
-    print("number of used cores: ", nCores)
+    print("Number of processed files:", nFiles)
+    print("Number of used cores:", nCores)
     print("Time per File: ", ((-startT + time.time())/nFiles))
 
     
