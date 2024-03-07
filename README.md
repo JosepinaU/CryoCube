@@ -1,15 +1,12 @@
 # CryoCube
 
-![multiicequake](https://github.com/JosepinaU/CryoCube/assets/36039541/10a313c1-5df4-4403-aca2-e61d8a55e365)
-
-
-
 **Lexcube Visualization of DAS Records**
 
 This repository is dedicated to building and visualizing interactive 3D Data Cubes from DAS (Distributed Acoustic Sensing) records.
 
 To showcase the workflow, we use a 10 min long DAS record section from Rhonegletscher (Switzerland) from 2020 including 100 channels. We first fourier transform the time series records to compute spectrograms (1-100 Hz), which we organize as a 3D data cube with the axes time, frequency and DAS channel. The data cube is stored as cryo_subcube.zarr and visualized using lexcube.
 
+![multiicequake](https://github.com/JosepinaU/CryoCube/assets/36039541/10a313c1-5df4-4403-aca2-e61d8a55e365)
 
 ### Features
 
