@@ -30,7 +30,7 @@ create_cube.py
 
 This script generates a spectral Data Cube from DAS data recorded at Rhonegletscher (Switzerland). The input data is stored in `./rhonedata` featuring five *.hdf5 formatted files representing 30 s seconds of strain rate data for the same 2496 DAS channels each. The DAS cable covered the entire glacier, from accumuluation zone to ablation zone (~ 9 km). The channel spacing was set to 4 m. 
 
-For all channels the data is fourier transformed in the frequency band of 1-100 Hz with a resolution of 1 Hz and using a time window length of 2 s (overlap = 0.5). The resulting Data Cube is a spectrogram for each DAS channel and stored as cryo_subcube.zarr. To configure the cube creation adjust the key parameters documented in the script.
+For all channels the data is fourier transformed in the frequency band of 1-100 Hz with a resolution of d_f = 1 Hz and using a time window length = 1/d_f s (overlap = 0.5). The resulting Data Cube is a spectrogram for each DAS channel and stored as cryo_subcube.zarr. To configure the cube creation adjust the key parameters documented in the script.
 
 ### Cube Visualization
 
