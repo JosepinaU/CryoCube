@@ -6,7 +6,7 @@ This repository is dedicated to building and visualizing interactive 3D Data Cub
 
 To showcase the workflow, we use a 10 min long DAS record section from Rhonegletscher (Switzerland) from 2020 including 100 channels. We first fourier transform the time series records to compute spectrograms (1-100 Hz), which we organize as a 3D data cube with the axes time, frequency and DAS channel. The data cube is stored as cryo_subcube.zarr and visualized using lexcube.
 
-<img align="center" width="500" height="300" src="https://github.com/JosepinaU/CryoCube/assets/36039541/10a313c1-5df4-4403-aca2-e61d8a55e365">
+<img align="center" width="1000" height="800" src="https://github.com/JosepinaU/CryoCube/assets/36039541/10a313c1-5df4-4403-aca2-e61d8a55e365">
 <img align="center" width="100" height="100" src="https://github.com/JosepinaU/CryoCube/assets/36039541/e0b6f663-30ea-4a3f-b0c9-a98b7bcabafc">
 
 
