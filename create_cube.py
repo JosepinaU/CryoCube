@@ -22,7 +22,7 @@ a spectrogram for each DAS-channel. However, since it is
 programmed for the structure of our DAS-data, 
 some things need to be changed to make it suitable for
 other structures. It is recommended to run this with 
-as many CPU-cores as possible. (And very much memory)
+as many CPU-cores as possible (and very much memory).
 
 How it's used in terminal:
 
@@ -73,11 +73,11 @@ def getTimeFromFilename(filename, day, month):
     """
     purpose of this function:
     
-    takes in filename of a DAS-hd5-file
+    takes in filename of a DAS-h5-file
     and returns the associated time of the data
-    (each hd5 file contains 30s of data)
+    (each h5 file contains 30 s of data)
     
-    structure of hd5-files:
+    structure of h5-files:
     rhone1khz_UTC_YYYYMMDD_HHMMSS.***.h5
 
     the function returns the time difference between the timepoint 
