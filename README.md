@@ -7,6 +7,8 @@ This repository is dedicated to building and visualizing interactive 3D Data Cub
 To showcase the workflow, we use a 10 min long DAS record section from Rhonegletscher (Switzerland) from 2020 including 100 channels. We first fourier transform the time series records to compute spectrograms (1-100 Hz), which we organize as a 3D data cube with the axes time, frequency and DAS channel. The data cube is stored as cryo_subcube.zarr and visualized using lexcube.
 
 ![multiicequake](https://github.com/JosepinaU/CryoCube/assets/36039541/10a313c1-5df4-4403-aca2-e61d8a55e365)
+![Rhone_cable](https://github.com/JosepinaU/CryoCube/assets/36039541/e0b6f663-30ea-4a3f-b0c9-a98b7bcabafc)
+
 
 ## Features
 
@@ -26,7 +28,9 @@ To create the zarr-formatted spectral Data Cube from cryoseismological DAS recor
 create_cube.py
 ```
 
-This script generates a Data Cube of DAS data recorded at the Rhonegletscher (Switzerland). The resulting Data Cube features a spectrogram for each DAS channel and stored as cryo_subcube.zarr. To configure the cube creation adjust the key parameters documented in the script.
+This script generates a spectral Data Cube from DAS data recorded at Rhonegletscher (Switzerland). The input data is stored in `./rhonedata` featuring five *.hdf5 formatted files representing 30 s seconds of strain rate data for the same 2496 DAS channels each. The DAS cable covered the entire glacier, from accumuluation zone to ablation zone (~ 9 km). The channel spacing was set to 4 m. 
+
+For all channels the data is fourier transformed in the frequency band of 1-100 Hz with a resolution of 1 Hz and using a time window length of 2 s (overlap = 0.5). The resulting Data Cube is a spectrogram for each DAS channel and stored as cryo_subcube.zarr. To configure the cube creation adjust the key parameters documented in the script.
 
 ### Cube Visualization
 
