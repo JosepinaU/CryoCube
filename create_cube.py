@@ -49,7 +49,7 @@ DATA_PATH = "rhonedata/"
 
 # nFiles: Determines how many h5 files are processed. For example, setting nFiles=10
 # processes the first ten chronologically sorted h5 files in the DATA_PATH directory.
-nFiles = 5
+nFiles = 2
 
 # nCores: Specifies how many CPU cores should be used for computation. Adjust according
 # to your system's capabilities and the workload size. The maximum number can be set to
@@ -67,6 +67,9 @@ nu = 1000
 # freq_max: Maximum frequency to be considered in the analysis. All values above
 # this frequency will be cut off.
 freq_max = 100
+
+ #path and name of resulting cube (which is a zarr-file)
+ZARR_NAME = "cryo_cube.zarr"
 
 
 def getTimeFromFilename(filename, day, month):
