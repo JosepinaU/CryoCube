@@ -217,8 +217,6 @@ if __name__=='__main__':
 
     two_digit_month = str(month) if month >9 else "0"+str(month)
     two_digit_day = str(day) if day >9 else "0"+str(day)
-    if not os.path.exists("data"):
-        os.makedirs("data")
         
     path_of_zarr = ZARR_NAME
     root = zarr.open(path_of_zarr, mode="w")
