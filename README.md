@@ -29,7 +29,7 @@ pip install -r requirements.txt
 
 Our test data set can be downloaded via: [testdata_rhone](https://cloud.scadsai.uni-leipzig.de/index.php/s/QMZSeXCfkqPFna7)
 
-`./testdata_rhone` features five *.hdf5 formatted files representing 30 s seconds of strain rate data for the same 2496 DAS channels each. The DAS cable covered the entire glacier, from accumuluation zone to ablation zone (~ 9 km). The channel spacing was set to 4 m.
+Unzip `./testdata_rhone.zip` to the project folder. The testdata features five *.hdf5 formatted files representing 30 s seconds of strain rate data for the same 2496 DAS channels each. The DAS cable covered the entire glacier, from accumuluation zone to ablation zone (~ 9 km). The channel spacing was set to 4 m.
 
 ### Cube Creation
 
