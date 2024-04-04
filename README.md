@@ -55,7 +55,7 @@ For all DAS channels the data is fourier transformed in the frequency band of 1-
 
 ### Cube Visualization
 
-To visualize the zarr-fomatted Data Cube (cryo_cube.zarr), execute the notebook: 
+To visualize the zarr-fomatted Data Cube (cryo_cube.zarr), execute the jupyter notebook: 
 
 `lexcube_visualization.ipynb`
 
