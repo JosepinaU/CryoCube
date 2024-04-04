@@ -19,13 +19,23 @@ To showcase the workflow, we use a 10 min long DAS record section from Rhoneglet
 
 ### Environment, Installation and Data
 
-The workflow requires a set of libraries stored in `requirements.txt`, which need to be installed in your preferred environment (e.g. conda) 
+The workflow requires a set of libraries stored in `requirements.txt`, which need to be installed in your preferred environment (e.g. conda or python) 
 
 ```console
 conda create --name lexcube
 conda activate lexcube
+conda install pip
 pip install -r requirements.txt
 ```
+
+OR
+
+```console
+python -m venv lexcube
+source lexcube/bin/activate
+pip install -r requirements.txt
+```
+
 
 Our test data set can be downloaded via: [testdata_rhone](https://cloud.scadsai.uni-leipzig.de/index.php/s/QMZSeXCfkqPFna7)
 
