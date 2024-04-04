@@ -45,7 +45,7 @@ loc_a, loc_e = 0, 9200
 
 # DATA_PATH: Path to the directory where the h5 data files are stored.
 # Adjust this to point to your data location.
-DATA_PATH = "rhonedata/"
+DATA_PATH = "testdata_rhone/"
 
 # nFiles: Determines how many h5 files are processed. For example, setting nFiles=10
 # processes the first ten chronologically sorted h5 files in the DATA_PATH directory.
