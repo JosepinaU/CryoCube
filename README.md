@@ -17,25 +17,39 @@ To showcase the workflow, we use a 10 min long DAS record section from Rhoneglet
 
 ## Getting Started
 
-### Installation and Environment
+### Environment, Installation and Data
 
 The workflow requires a set of libraries stored in `requirements.txt`, which need to be installed in your preferred environment (e.g. conda) 
+
+```console
+conda create --name lexcube
+conda activate lexcube
+pip install -r requirements.txt
+```
+
+Our test data set can be downloaded via: [testdata_rhone](https://cloud.scadsai.uni-leipzig.de/index.php/s/xQExrAgKs9DTgPX)
+
+`./testdata_rhone` features five *.hdf5 formatted files representing 30 s seconds of strain rate data for the same 2496 DAS channels each. The DAS cable covered the entire glacier, from accumuluation zone to ablation zone (~ 9 km). The channel spacing was set to 4 m.
 
 ### Cube Creation
 
 To create the zarr-formatted spectral Data Cube from cryoseismological DAS records, execute:
+
 ```console
-create_cube.py
+python3 create_cube.py
 ```
 
-This script generates a spectral Data Cube from DAS data recorded at Rhonegletscher (Switzerland). The input data is stored in `./rhonedata` featuring five *.hdf5 formatted files representing 30 s seconds of strain rate data for the same 2496 DAS channels each. The DAS cable covered the entire glacier, from accumuluation zone to ablation zone (~ 9 km). The channel spacing was set to 4 m. 
+This script generates a spectral Data Cube from DAS data recorded on Rhonegletscher (Switzerland) in summer 2020.  
 
-For all channels the data is fourier transformed in the frequency band of 1-100 Hz with a resolution of d_f = 1 Hz and using a time window length = 1/d_f s (overlap = 0.5). The resulting Data Cube is a spectrogram for each DAS channel and it is stored as cryo_subcube.zarr. To individually configure the cube creation adjust the key parameters documented in the script.
+For all DAS channels the data is fourier transformed in the frequency band of 1-100 Hz with a resolution of d_f = 1 Hz and using a time window length = 1/d_f s (overlap = 0.5). The resulting Data Cube is a spectrogram for each DAS channel and it is stored as cryo_cube.zarr. To individually configure the cube creation adjust the key parameters documented in the script.
 
 ### Cube Visualization
 
-To visualize the zarr-fomatted Data Cube (cryo_subcube.zarr), execute the notebook: 
+To visualize the zarr-fomatted Data Cube (cryo_cube.zarr), execute the notebook: 
+
 `lexcube_visualization.ipynb`
+
+... and play. :)
 
 ## Get in touch with us
 
