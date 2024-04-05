@@ -17,21 +17,25 @@ import multiprocessing
 from functools import partial
 
 """
-This script is used to create a datacube containing
-a spectrogram for each DAS-channel. However, since it is
-programmed for the structure of our DAS-data, 
-some things need to be changed to make it suitable for
-other structures. It is recommended to run this with 
-as many CPU-cores as possible (and very much memory).
+This script is used to create a data cube containing 
+spectrograms for DAS channels. The data cube features 
+the axes DAS channel, time, and frequency.
 
-How it's used in terminal:
+Please note that the script is designed for the structure 
+of the example DAS data set (testdata_rhone), which is 
+stored as *.hdf5 files, each holding 30 seconds of 
+continuous strain rate data (rows are DAS channels, 
+columns are data samples). Depending on the input data, 
+you may need to adapt the workflow. It is recommended 
+to run this script with as many CPU cores as possible 
+(and a significant amount of memory).
+
+How it's used in the terminal:
 
 create_cube.py 
 
-
 If you have any questions, feel free to reach out to
-me, my mail is felix.roth@studserv.uni-leipzig.de
-
+to us!
 """
 
 # Key adjustable parameters:
