@@ -40,22 +40,21 @@ to us!
 
 # Key adjustable parameters:
 
-# d_f: Frequency resolution in Hz. Adjusts the frequency granularity of the spectrogram.
+# d_f: Frequency resolution in Hz - the desired frequency granularity of the spectrogram.
 d_f = 1
 
 # loc_a and loc_e: Specify the cable section to be processed (in meters).
-# 0 signifies the start of the cable. Adjust these to focus on a specific segment.
+# 0 signifies the start of the cable.
 loc_a, loc_e = 0, 9200
 
 # DATA_PATH: Path to the directory where the h5 data files are stored.
-# Adjust this to point to your data location.
 DATA_PATH = "testdata_rhone/"
 
 # nFiles: Determines how many h5 files are processed. For example, setting nFiles=10
 # processes the first ten chronologically sorted h5 files in the DATA_PATH directory.
 nFiles = 2
 
-# nCores: Specifies how many CPU cores should be used for computation. Adjust according
+# nCores: Specifies how many CPU cores shall be used for computation. Adjust according
 # to your system's capabilities and the workload size. The maximum number can be set to
 # multiprocessing.cpu_count() to use all available cores.
 nCores = 8
@@ -65,30 +64,28 @@ nCores = 8
 # file_length: Length of a single h5 file in seconds.
 file_length = 30
 
-# nu: Sampling frequency in Hz. Defines the rate at which data points are recorded.
+# nu: Sampling frequency in Hz of the recorded data.
 nu = 1000
 
 # freq_max: Maximum frequency to be considered in the analysis. All values above
 # this frequency will be cut off.
 freq_max = 100
 
- #path and name of resulting cube (which is a zarr-file)
+#path and name of resulting zarr-formatted data cube.
 ZARR_NAME = "cryo_cube.zarr"
 
 
 def getTimeFromFilename(filename, day, month):
     """
-    purpose of this function:
-    
-    takes in filename of a DAS-h5-file
+    The function reads the filename of a DAS-h5-file
     and returns the associated time of the data
-    (each h5 file contains 30 s of data)
+    (each h5 file contains 30 s of data).
     
     structure of h5-files:
     rhone1khz_UTC_YYYYMMDD_HHMMSS.***.h5
 
-    the function returns the time difference between the timepoint 
-    of the file and the start of the day
+    The function returns the time difference between the timepoint 
+    of the file and the start of the day.
     """
     hours_minutes_seconds = re.findall("_......\\.", filename)[0][1:]
     #print(hours_minutes_seconds)
@@ -98,17 +95,15 @@ def getTimeFromFilename(filename, day, month):
     return (datetime(2020, month, day, hour, minutes, seconds) - datetime(2020, month, day, 0, 0, 0)).total_seconds()
 
 
-
 def getFilenames(day, month, mypath):
     """
-    This function is supposed to collect all
+    This function collects all
     filenames in the folder with the DAS-data
     and returns a dictionary where the keys are
     integers and the corresponding values
     are the filenames. The dictionary is then sorted
     chronologically.
     """
-    
     two_digit_month = str(month) if month >9 else "0"+str(month)
     #mypath = "/work/users/fu591lmui/RhoneData/2020"+two_digit_month+str(day)+"/"
 
@@ -116,8 +111,6 @@ def getFilenames(day, month, mypath):
     q = list([(mypath+file, getTimeFromFilename(file, day, month)) for file in files])
     q = sorted(q, key = itemgetter(1))
     return  {i:qq[0] for i,qq in enumerate(q)}
-
-
 
 
 def channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f):
@@ -152,8 +145,7 @@ def create_spectro_segment(file_index, d_f, nseg, seg_len, ind_a, ind_e, ind_f, 
     #opening the DAS-data
     f = h5py.File(q[file_index],'r')
     dset=f['Acoustic']        
-    
-    
+
     #extracting metadata and the DAS-data (hereby defined "data")
     attr=dset.attrs 
     data = np.array(dset)
@@ -174,10 +166,6 @@ def create_spectro_segment(file_index, d_f, nseg, seg_len, ind_a, ind_e, ind_f, 
 
     else:
         Fsegs = channel_fourier(data, nseg-1, seg_len, taper, ind_a, ind_e, ind_f)
-
-    
-    
-    
 
     return Fsegs
 
