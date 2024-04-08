@@ -52,7 +52,7 @@ DATA_PATH = "testdata_rhone/"
 
 # nFiles: Determines how many h5 files are processed. For example, setting nFiles=10
 # processes the first ten chronologically sorted h5 files in the DATA_PATH directory.
-nFiles = 2
+nFiles = 5
 
 # nCores: Specifies how many CPU cores shall be used for computation. Adjust according
 # to your system's capabilities and the workload size. The maximum number can be set to
