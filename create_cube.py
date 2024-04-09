@@ -77,16 +77,17 @@ ZARR_NAME = "cryo_cube.zarr"
 
 def getTimeFromFilename(filename, day, month):
     """
-    The function reads the filename of a DAS-h5-file
-    and returns the associated time of the data
-    (each h5 file contains 30 s of data).
+    Extracts the time from a DAS-h5-file's filename and calculates the time elapsed since the start of the day.
     
-    structure of h5-files:
-    rhone1khz_UTC_YYYYMMDD_HHMMSS.***.h5
-
-    The function returns the time difference between the timepoint 
-    of the file and the start of the day.
+    Args:
+        filename (str): The filename to extract time from.
+        day (int): The day to calculate the time difference for.
+        month (int): The month to calculate the time difference for.
+    
+    Returns:
+        float: The time difference in seconds between the file's timestamp and the start of the specified day.
     """
+    # Extracting hours, minutes, and seconds from the filename
     hours_minutes_seconds = re.findall("_......\\.", filename)[0][1:]
     #print(hours_minutes_seconds)
     hour = int(hours_minutes_seconds[0:2])
@@ -97,13 +98,17 @@ def getTimeFromFilename(filename, day, month):
 
 def getFilenames(day, month, mypath):
     """
-    This function collects all
-    filenames in the folder with the DAS-data
-    and returns a dictionary where the keys are
-    integers and the corresponding values
-    are the filenames. The dictionary is then sorted
-    chronologically.
+    Collects and sorts the filenames in the folder with DAS data by time.
+    
+    Args:
+        day (int): The day of interest.
+        month (int): The month of interest.
+        mypath (str): Path to the folder containing DAS data.
+    
+    Returns:
+        dict: A dictionary where keys are integers and values are filenames, sorted chronologically.
     """
+    # Filtering and sorting files based on their timestamps
     two_digit_month = str(month) if month >9 else "0"+str(month)
     #mypath = "/work/users/fu591lmui/RhoneData/2020"+two_digit_month+str(day)+"/"
 
@@ -114,6 +119,22 @@ def getFilenames(day, month, mypath):
 
 
 def channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f):
+    """
+    Applies Fourier transform to segments of DAS channel data to compute spectrograms.
+    
+    Args:
+        data (ndarray): The raw data from DAS channels.
+        nseg (int): Number of segments.
+        seg_len (int): Length of each segment.
+        taper (ndarray): The taper function to apply before the Fourier transform.
+        ind_a (int): Start index of the cable section.
+        ind_e (int): End index of the cable section.
+        ind_f (int): Number of frequency bins.
+    
+    Returns:
+        ndarray: A 3D array containing the Fourier transform results for each segment and channel.
+    """
+    # Preparing data segments and applying Fourier transform
     
     #dividing the data into segments each consisting of desired amount of data points
     segs = ([data[i*(seg_len//2):(i+2)*(seg_len//2)] for i in range(nseg)])
@@ -141,6 +162,18 @@ def channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f):
 
 
 def create_spectro_segment(file_index, d_f, nseg, seg_len, ind_a, ind_e, ind_f, q):
+    """
+    Creates a spectrogram segment for a given file index.
+    
+    Args:
+        file_index (int): The index of the file to process.
+        d_f, nseg, seg_len, ind_a, ind_e, ind_f: Parameters for spectrogram computation (see above).
+        q (dict): Dictionary of filenames to process.
+    
+    Returns:
+        ndarray: The spectrogram segment for the specified file.
+    """
+    # Processing a single file to generate its spectrogram segment
     global nu, file_length, nFiles
     #opening the DAS-data
     f = h5py.File(q[file_index],'r')
