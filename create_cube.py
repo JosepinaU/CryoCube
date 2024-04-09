@@ -17,18 +17,22 @@ import multiprocessing
 from functools import partial
 
 """
-This script is used to create a data cube containing 
-spectrograms for DAS channels. The data cube features 
-the axes DAS channel, time, and frequency.
+This script is used to create a data cube (*.zarr) containing 
+spectrograms for measurements of strain rate recorded by 
+DAS (distributed acoustic sensing). The data cube features 
+the dimensions DAS channel, time, and frequency.
 
 Please note that the script is designed for the structure 
-of the example DAS data set (testdata_rhone), which is 
+of the example DAS data set (testdata_rhone)[https://cloud.scadsai.
+uni-leipzig.de/index.php/apps/files/files/5700666?dir=/
+environment-earth/Shares/CryoCube_GIT/testdata_rhone], which is 
 stored as *.hdf5 files, each holding 30 seconds of 
 continuous strain rate data (rows are DAS channels, 
 columns are data samples). Depending on the input data, 
-you may need to adapt the workflow. It is recommended 
-to run this script with as many CPU cores as possible 
-(and a significant amount of memory).
+you may need to adapt the workflow. 
+
+It is recommended to run this script with as many CPU cores as 
+possible (and a significant amount of memory).
 
 How it's used in the terminal:
 
@@ -77,10 +81,11 @@ ZARR_NAME = "cryo_cube.zarr"
 
 def getTimeFromFilename(filename, day, month):
     """
-    Extracts the time from a DAS-h5-file's filename and calculates the time elapsed since the start of the day.
+    Extracts the time from a DAS-h5-file's filename and calculates 
+    the time elapsed since the start of the day.
     
     Args:
-        filename (str): The filename to extract time from.
+        filename (str): The filename to extract time information from.
         day (int): The day to calculate the time difference for.
         month (int): The month to calculate the time difference for.
     
@@ -98,7 +103,7 @@ def getTimeFromFilename(filename, day, month):
 
 def getFilenames(day, month, mypath):
     """
-    Collects and sorts the filenames in the folder with DAS data by time.
+    Collects the filenames in the data folder and sorts them by time.
     
     Args:
         day (int): The day of interest.
@@ -120,7 +125,7 @@ def getFilenames(day, month, mypath):
 
 def channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f):
     """
-    Applies Fourier transform to segments of DAS channel data to compute spectrograms.
+    Applies Fourier Transformation to segments of DAS records to compute spectrograms.
     
     Args:
         data (ndarray): The raw data from DAS channels.
@@ -132,7 +137,7 @@ def channel_fourier(data, nseg, seg_len, taper, ind_a, ind_e, ind_f):
         ind_f (int): Number of frequency bins.
     
     Returns:
-        ndarray: A 3D array containing the Fourier transform results for each segment and channel.
+        ndarray: A 3D array containing the Fourier transform for each segment and channel.
     """
     # Preparing data segments and applying Fourier transform
     
@@ -271,10 +276,9 @@ if __name__=='__main__':
     # a fft for each file simultanously.
     
     # Before that we split the whole data to be processed in 
-    # 13 parts (of course arbitrary) to not overload the memory!
-    # How it's done in this case in this case is to divide
-    # a list of indices (1,2,3,...,nFiles) into 13 parts. Since 
-    # create_spectro_segment needs an index k which tells which 
+    # digestible parts (of course arbitrary) to not overload the memory!
+    # Here, we divide a list of indices (1,2,3,...,nFiles) into 13 parts.  
+    # Since create_spectro_segment needs an index k specifying which 
     # k-th file needs to be processed, we now pass on those index
     # lists to all the cores of the processors so each file can 
     # be processed independently. Make the amount of diveded parts
