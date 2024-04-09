@@ -4,7 +4,7 @@
 
 This repository is dedicated to building and visualizing interactive 3D Data Cubes from DAS (Distributed Acoustic Sensing) records.
 
-To showcase the workflow, we use a 10 min long DAS record section from Rhonegletscher (Switzerland) from 2020 including 100 channels. We first fourier transform the time series records to compute spectrograms (1-100 Hz), which we organize as a 3D data cube with the axes time, frequency and DAS channel. The data cube is stored as cryo_subcube.zarr and visualized using lexcube.
+To showcase the workflow, we use a 2.5 min long DAS record section from Rhonegletscher (Switzerland) from 2020 including 2299 channels. We first fourier transform the time series records (strain rate) to compute spectrograms (1-100 Hz), which we organize as a 3D data cube with the dimensions time, frequency and DAS channel. The data cube is stored as cryo_subcube.zarr and visualized using lexcube.
 
 <table align="center" style="border-collapse: collapse; margin: 0 auto;">
   <tr>
@@ -42,7 +42,7 @@ pip install -r requirements.txt
 
 Our test data set can be downloaded via: [testdata_rhone](https://cloud.scadsai.uni-leipzig.de/index.php/s/QMZSeXCfkqPFna7)
 
-Unzip `./testdata_rhone.zip` to the project folder. The testdata features five *.hdf5 formatted files representing 30 s seconds of strain rate data for the same 2496 DAS channels each. The DAS cable covered the entire glacier, from accumuluation zone to ablation zone (~ 9 km). The channel spacing was set to 4 m.
+Unzip `./testdata_rhone.zip` to the project folder. The testdata features five *.hdf5 formatted files representing 30 s seconds of strain rate data for the same 2299 DAS channels each. The DAS cable covered the entire glacier, from accumuluation zone to ablation zone (~ 9 km). The channel spacing was set to 4 m.
 
 ### Cube Creation
 
