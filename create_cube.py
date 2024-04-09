@@ -207,6 +207,7 @@ def create_spectro_segment(file_index, d_f, nseg, seg_len, ind_a, ind_e, ind_f, 
 
     return Fsegs
 
+
  
 
 if __name__=='__main__':
@@ -225,7 +226,6 @@ if __name__=='__main__':
 
     startT = time.time() 
 
-
     seg_length=1/d_f #calculate window length corresponding to d_f
     
     ind_f = int(seg_length*freq_max+1)
@@ -237,10 +237,9 @@ if __name__=='__main__':
     location_coords = np.arange(loc_a, loc_e, 4)
     freq_coords=scipy.fft.rfftfreq(int(nu/d_f), 1/nu)[:ind_f]
 
-
-
-    # in next line the corresponding channel indices get calculated
-    # since the distance between each channel is 4m
+    
+    # in next line the corresponding channel indices are calculated
+    # since the distance between each channel is 4 m
     ind_a, ind_e= loc_a//4, loc_e//4 
 
     # z-shape is in following order: (number time intervals, location, frequency)
@@ -252,7 +251,6 @@ if __name__=='__main__':
     root = zarr.open(path_of_zarr, mode="w")
     z = root.zeros('data', shape=(nFiles*nseg-1,ind_e-ind_a,ind_f), chunks=(nseg,ind_e-ind_a,ind_f), dtype='float64')
 
-    
     # getFilenames returns a dictionary full of the filenames
     # which are in the folder /RhoneData/YYYYMMDD
 
@@ -301,12 +299,3 @@ if __name__=='__main__':
     print("Number of processed files:", nFiles)
     print("Number of used cores:", nCores)
     print("Time per File: ", ((-startT + time.time())/nFiles))
-
-    
-
-
-
-
-
-        
-
